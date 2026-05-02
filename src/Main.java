@@ -102,8 +102,11 @@ public class Main {
                                 bw.newLine();
                             }
 
+                            //aloca as linhas na ultima parte caso a divisão não seja exata
+                            long linhasNessaParte = (i == partes - 1) ? qtdPorArq + resto : qtdPorArq;
+
                             //escreve as linhas em cada arquivo
-                            for(int j = 0; j < qtdPorArq; j++)
+                            for(int j = 0; j < linhasNessaParte; j++)
                             {
                                 String aux = br.readLine();
                                 if(aux == null)
@@ -114,6 +117,7 @@ public class Main {
                             bw.close();
                         }
                     }
+                    JOptionPane.showMessageDialog(null,"Arquivos criados na pasta!");
                 }
                 br.close();
             }
