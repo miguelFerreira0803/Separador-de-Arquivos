@@ -13,14 +13,18 @@ public class Main {
         String texto;
 
         try{
+
             FileReader fr = new FileReader(caminho);
             BufferedReader br = new BufferedReader(fr);
+
+            //lê o total de linhas do arquivo até o final
             texto = br.readLine();
             while(texto != null)
             {
                 texto = br.readLine();
                 linhas++;
             }
+
         }catch(Exception e) {
             System.out.println("Erro: " + e);
         }
@@ -28,6 +32,7 @@ public class Main {
         resultado = JOptionPane.showConfirmDialog(null,"O arquivo possui cabeçalho?");
         if (resultado == JOptionPane.YES_OPTION)
         {
+            //retorna o numero de linhas sem contar o cabeçalho
             cabecalho = true;
             return linhas - 1;
         }
@@ -49,9 +54,8 @@ public class Main {
         if(resultado == JFileChooser.APPROVE_OPTION)
         {
             File arquivo = chooser.getSelectedFile();
-            String caminho = arquivo.getAbsolutePath();
-            String nomeArq = arquivo.getName().replace("csv","");
-            String diretorio = arquivo.getParent();
+            String caminho = arquivo.getAbsolutePath(); //pega o endereço do arquivo
+
             try{
                 BufferedReader br = new BufferedReader(new FileReader(caminho));
 
@@ -63,6 +67,8 @@ public class Main {
                     return;
                 }
                 else{
+
+                    //pergunta o numero de partes a ser dividido e verifica se é um numero valido
                     partes = Integer.parseInt(JOptionPane.showInputDialog(null, "Quer dividir o arquivo em quantas partes?"));
                     if(partes <=0 || partes > TotalLin)
                     {
@@ -71,21 +77,32 @@ public class Main {
                     }
                     else
                     {
+                        //define quantas linhas vão ser colocadas em cada arquivo
                         qtdPorArq = TotalLin/partes;
 
+                        //pega o resto das linhas que sobraram, caso aconteça
+                        long resto = TotalLin%partes;
+
+                        //case tenha um cabeçalho, faz a leitura da primeira linha
                         if(cabecalho)
                             TemCabecalho = br.readLine();
 
+                        String nomeArq = arquivo.getName().replace("csv","");//define o nome base dos novos arquivos
+                        String diretorio = arquivo.getParent(); //define o diretorio onde será gravado as partes
+
                         for(int i = 0; i < partes; i++)
                         {
-                            String NewName = diretorio + File.separator + nomeArq + (i+1) + ".csv";
-                            BufferedWriter bw = new BufferedWriter(new FileWriter(NewName));
+                            String NewName = diretorio + File.separator + nomeArq + "_parte" + (i+1) + ".csv"; //da o nome para cada arquivo
+                            BufferedWriter bw = new BufferedWriter(new FileWriter(NewName));//cria cada arquivo
+
+                            //escreve o cabeçalho em cada arquivo
                             if(cabecalho)
                             {
                                 bw.write(TemCabecalho);
                                 bw.newLine();
                             }
 
+                            //escreve as linhas em cada arquivo
                             for(int j = 0; j < qtdPorArq; j++)
                             {
                                 String aux = br.readLine();
